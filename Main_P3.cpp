@@ -235,6 +235,9 @@ int main() {
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
+		//Ejercicio para practica
+			/*Acomodar las cajas como piramide cada bloque significa una letra de tu nombre Alexa (5) cajas
+			Al menos que se vea cada cara de los bloques que existen*/
 
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
