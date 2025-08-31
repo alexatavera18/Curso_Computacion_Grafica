@@ -1,4 +1,4 @@
-/*Previo 3_Lopez Alexa
+/*Previo 4_Lopez Alexa
   Fecha: 31/08/2025
   Tema: Modelado geometrico
   Objetivo:Construir una mesa a partir de la primitiva basica que es el cubo*/
