@@ -4,7 +4,7 @@
   Objetivo:Construir un leon estilo voxel*/
 
 #include<iostream>
-
+#include <algorithm>
 //#define GLEW_STATIC
 
 #include <GL/glew.h>
@@ -29,6 +29,25 @@ float movX=0.0f;
 float movY=0.0f;
 float movZ=-5.0f;
 float rot = 0.0f;
+static void CrearVAOConVertices(const float* data, size_t numFloats, GLuint& outVAO, GLuint& outVBO) {
+	glGenVertexArrays(1, &outVAO);
+	glGenBuffers(1, &outVBO);
+
+	glBindVertexArray(outVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, outVBO);
+	glBufferData(GL_ARRAY_BUFFER, numFloats * sizeof(float), data, GL_STATIC_DRAW);
+
+	// layout (location = 0) -> posición (x,y,z)
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+
+	// layout (location = 1) -> color (r,g,b)
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
 int main() {
 	glfwInit();
 	//Verificación de compatibilidad 
@@ -94,35 +113,35 @@ int main() {
 		0.5f,  0.5f, 0.5f,  1.0f, 0.647f, 0.0f,
 		-0.5f,  0.5f, 0.5f, 1.0f, 0.647f, 0.0f,
 		-0.5f, -0.5f, 0.5f, 1.0f, 0.647f, 0.0f,
-		
-	    -0.5f, -0.5f,-0.5f, 1.0f, 0.647f, 0.0f,//Back
+
+		-0.5f, -0.5f,-0.5f, 1.0f, 0.647f, 0.0f,//Back
 		 0.5f, -0.5f,-0.5f, 1.0f, 0.647f, 0.0f,
 		 0.5f,  0.5f,-0.5f, 1.0f, 0.647f, 0.0f,
 		 0.5f,  0.5f,-0.5f, 1.0f, 0.647f, 0.0f,
-	    -0.5f,  0.5f,-0.5f, 1.0f, 0.647f, 0.0f,
-	    -0.5f, -0.5f,-0.5f, 1.0f, 0.647f, 0.0f,
-		
+		-0.5f,  0.5f,-0.5f, 1.0f, 0.647f, 0.0f,
+		-0.5f, -0.5f,-0.5f, 1.0f, 0.647f, 0.0f,
+
 		 0.5f, -0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
 		 0.5f, -0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
 		 0.5f,  0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
 		 0.5f,  0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
 		 0.5f,  0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
 		 0.5f,  -0.5f, 0.5f,  1.0f, 0.647f, 0.0f,
-      
+
 		-0.5f,  0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
 		-0.5f,  0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
 		-0.5f, -0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
 		-0.5f, -0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
 		-0.5f, -0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
 		-0.5f,  0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
-		
+
 		-0.5f, -0.5f, -0.5f, 1.0f, 0.647f, 0.0f,
 		0.5f, -0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
 		0.5f, -0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
 		0.5f, -0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
 		-0.5f, -0.5f,  0.5f, 1.0f, 0.647f, 0.0f,
 		-0.5f, -0.5f, -0.5f, 1.0f, 0.647f, 0.0f,
-		
+
 		-0.5f,  0.5f, -0.5f, 1.0f, 0.647f, 0.0f,
 		0.5f,  0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
 		0.5f,  0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
@@ -131,11 +150,32 @@ int main() {
 		-0.5f,  0.5f, -0.5f, 1.0f, 0.647f, 0.0f,
 	};
 
+	// Naranja fuerte (#FF7A00 -> 1.0, 0.478, 0.0)
+	float verticesNaranjaFuerte[sizeof(vertices) / sizeof(vertices[0])];
+	std::copy(std::begin(vertices), std::end(vertices), std::begin(verticesNaranjaFuerte));
+	for (size_t i = 0; i < sizeof(verticesNaranjaFuerte) / sizeof(float); i += 6) {
+		verticesNaranjaFuerte[i + 3] = 1.0f;   // R
+		verticesNaranjaFuerte[i + 4] = 0.478f; // G 
+		verticesNaranjaFuerte[i + 5] = 0.0f;   // B
+	}
 
+	// Negro (0,0,0)
+	float verticesNegro[sizeof(vertices) / sizeof(vertices[0])];
+	std::copy(std::begin(vertices), std::end(vertices), std::begin(verticesNegro));
+	for (size_t i = 0; i < sizeof(verticesNegro) / sizeof(float); i += 6) {
+		verticesNegro[i + 3] = 0.0f; // R
+		verticesNegro[i + 4] = 0.0f; // G
+		verticesNegro[i + 5] = 0.0f; // B
+	}
 
+	GLuint vaoBase = 0, vboBase = 0;
+	GLuint vaoNaranjaFuerte = 0, vboNaranjaFuerte = 0;
+	GLuint vaoNegro = 0, vboNegro = 0;
+	CrearVAOConVertices(vertices, sizeof(vertices) / sizeof(float), vaoBase, vboBase);
+	CrearVAOConVertices(verticesNaranjaFuerte, sizeof(verticesNaranjaFuerte) / sizeof(float), vaoNaranjaFuerte, vboNaranjaFuerte);
+	CrearVAOConVertices(verticesNegro, sizeof(verticesNegro) / sizeof(float), vaoNegro, vboNegro);
 
-	GLuint VBO, VAO;
-	glGenVertexArrays(1, &VAO);
+	/*glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	//glGenBuffers(1, &EBO);
 
@@ -147,7 +187,7 @@ int main() {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	// 3.Copiamos nuestro arreglo de indices en  un elemento del buffer para que OpenGL lo use
 	/*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);*/
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// 4. Despues colocamos las caracteristicas de los vertices
 
@@ -162,7 +202,7 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 
-	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
+	glBindVertexArray(0); */// Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
 
 	
 	glm::mat4 projection=glm::mat4(1);
@@ -201,12 +241,13 @@ int main() {
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 
-		glBindVertexArray(VAO);
+		//glBindVertexArray(VAO);
 		/*
 		model = glm::mat4(1.0f);
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		*/
+		glBindVertexArray(vaoBase); //Naranja normal para el cuerpo del leon
 		//Cara del león
 		model = glm::mat4(1.0f);
 		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 2.0f));//Ancho, grosor, profundidad
@@ -312,6 +353,75 @@ int main() {
 		model = glm::translate(model, glm::vec3(0.0f, 4.4f, -4.37f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+		glBindVertexArray(vaoNaranjaFuerte);//Naranja fuerte para la melena del leon 
+
+
+		//Melena del leon
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(2.5f, 3.3f, 0.3f));//Ancho, grosor, profundidad
+		model = glm::translate(model, glm::vec3(0.0f, 0.6f, 8.5f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(2.9f, 2.5f, 0.3f));//Ancho, grosor, profundidad
+		model = glm::translate(model, glm::vec3(0.0f, 0.7f, 8.5f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(1.5f, 2.2f, 0.5f));//Ancho, grosor, profundidad
+		model = glm::translate(model, glm::vec3(0.5f, 0.9f, 4.3f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36); 
+
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(1.5f, 2.2f, 0.5f));//Ancho, grosor, profundidad
+		model = glm::translate(model, glm::vec3(-0.5f, 0.9f, 4.3f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(1.8f, 1.0f, 0.5f));//Ancho, grosor, profundidad
+		model = glm::translate(model, glm::vec3(0.0f, 3.0f, 4.3f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		//Nariz
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.3f, 0.4f, 0.4f));//Ancho, grosor, profundidad
+		model = glm::translate(model, glm::vec3(0.0f, 4.5f, 9.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		//Cola del leon final
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.5f, 0.9f, 0.3f));//Ancho, grosor, profundidad
+		model = glm::translate(model, glm::vec3(0.0f, 2.0f, -14.37f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.3f, 0.4f, 0.5f));
+		model = glm::translate(model, glm::vec3(0.0f, 4.4f, -9.37f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		glBindVertexArray(vaoNegro);
+		//Ojos
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		model = glm::translate(model, glm::vec3(-2.0f, 11.5f, 14.7f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		model = glm::translate(model, glm::vec3(2.0f, 11.5f, 14.7f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 		/*
 		//Primer pata de la mesa
 		model = glm::mat4(1.0f);
@@ -347,8 +457,14 @@ int main() {
 		glfwSwapBuffers(window);
 	
 	}
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
+
+	//glDeleteVertexArrays(1, &VAO);
+	glDeleteVertexArrays(1, &vaoBase);
+	glDeleteBuffers(1, &vboBase);
+	glDeleteVertexArrays(1, &vaoNaranjaFuerte);
+	glDeleteBuffers(1, &vboNaranjaFuerte);
+	glDeleteVertexArrays(1, &vaoNegro);
+	glDeleteBuffers(1, &vboNegro);
 
 
 	glfwTerminate();
