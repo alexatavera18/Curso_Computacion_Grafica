@@ -1,7 +1,7 @@
-/*Previo 4_Lopez Alexa
-  Fecha: 31/08/2025
+/*Práctica 4_Lopez Alexa
+  Fecha: 5/09/2025
   Tema: Modelado geometrico
-  Objetivo:Construir una mesa a partir de la primitiva basica que es el cubo*/
+  Objetivo:Construir un leon estilo voxel*/
 
 #include<iostream>
 
@@ -40,7 +40,7 @@ int main() {
 
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Previo3_Modelado geometrico_Alexa Lopez", nullptr, nullptr);
+	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "Practica 4_Modelado geometrico_Alexa Lopez", nullptr, nullptr);
 
 	int screenWidth, screenHeight;
 
@@ -88,47 +88,47 @@ int main() {
 
 	// use with Perspective Projection
 	float vertices[] = {
-		-0.5f, -0.5f, 0.5f, 1.0f, 0.0f,0.0f,//Front
-		0.5f, -0.5f, 0.5f,  1.0f, 0.0f,0.0f,
-		0.5f,  0.5f, 0.5f,  1.0f, 0.0f,0.0f,
-		0.5f,  0.5f, 0.5f,  1.0f, 0.0f,0.0f,
-		-0.5f,  0.5f, 0.5f, 1.0f, 0.0f,0.0f,
-		-0.5f, -0.5f, 0.5f, 1.0f, 0.0f,0.0f,
+		-0.5f, -0.5f, 0.5f, 1.0f, 0.647f, 0.0f,//Front
+		0.5f, -0.5f, 0.5f,  1.0f, 0.647f, 0.0f,
+		0.5f,  0.5f, 0.5f,  1.0f, 0.647f, 0.0f,
+		0.5f,  0.5f, 0.5f,  1.0f, 0.647f, 0.0f,
+		-0.5f,  0.5f, 0.5f, 1.0f, 0.647f, 0.0f,
+		-0.5f, -0.5f, 0.5f, 1.0f, 0.647f, 0.0f,
 		
-	    -0.5f, -0.5f,-0.5f, 0.0f, 1.0f,0.0f,//Back
-		 0.5f, -0.5f,-0.5f, 0.0f, 1.0f,0.0f,
-		 0.5f,  0.5f,-0.5f, 0.0f, 1.0f,0.0f,
-		 0.5f,  0.5f,-0.5f, 0.0f, 1.0f,0.0f,
-	    -0.5f,  0.5f,-0.5f, 0.0f, 1.0f,0.0f,
-	    -0.5f, -0.5f,-0.5f, 0.0f, 1.0f,0.0f,
+	    -0.5f, -0.5f,-0.5f, 1.0f, 0.647f, 0.0f,//Back
+		 0.5f, -0.5f,-0.5f, 1.0f, 0.647f, 0.0f,
+		 0.5f,  0.5f,-0.5f, 1.0f, 0.647f, 0.0f,
+		 0.5f,  0.5f,-0.5f, 1.0f, 0.647f, 0.0f,
+	    -0.5f,  0.5f,-0.5f, 1.0f, 0.647f, 0.0f,
+	    -0.5f, -0.5f,-0.5f, 1.0f, 0.647f, 0.0f,
 		
-		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 0.0f,1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f, 0.0f,1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f, 0.0f,1.0f,
-		 0.5f,  -0.5f, 0.5f, 0.0f, 0.0f,1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
+		 0.5f,  -0.5f, 0.5f,  1.0f, 0.647f, 0.0f,
       
-		-0.5f,  0.5f,  0.5f,  1.0f, 1.0f,0.0f,
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,0.0f,
-		-0.5f, -0.5f, -0.5f,  1.0f, 1.0f,0.0f,
-		-0.5f, -0.5f, -0.5f,  1.0f, 1.0f,0.0f,
-		-0.5f, -0.5f,  0.5f,  1.0f, 1.0f,0.0f,
-		-0.5f,  0.5f,  0.5f,  1.0f, 1.0f,0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
 		
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,1.0f,
-		0.5f, -0.5f,  0.5f,  0.0f, 1.0f,1.0f,
-		0.5f, -0.5f,  0.5f,  0.0f, 1.0f,1.0f,
-		-0.5f, -0.5f,  0.5f, 0.0f, 1.0f,1.0f,
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f,1.0f,
+		-0.5f, -0.5f, -0.5f, 1.0f, 0.647f, 0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
+		-0.5f, -0.5f,  0.5f, 1.0f, 0.647f, 0.0f,
+		-0.5f, -0.5f, -0.5f, 1.0f, 0.647f, 0.0f,
 		
-		-0.5f,  0.5f, -0.5f, 1.0f, 0.2f,0.5f,
-		0.5f,  0.5f, -0.5f,  1.0f, 0.2f,0.5f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.2f,0.5f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.2f,0.5f,
-		-0.5f,  0.5f,  0.5f, 1.0f, 0.2f,0.5f,
-		-0.5f,  0.5f, -0.5f, 1.0f, 0.2f,0.5f,
+		-0.5f,  0.5f, -0.5f, 1.0f, 0.647f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 0.647f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.647f, 0.0f,
+		-0.5f,  0.5f,  0.5f, 1.0f, 0.647f, 0.0f,
+		-0.5f,  0.5f, -0.5f, 1.0f, 0.647f, 0.0f,
 	};
 
 
@@ -171,7 +171,7 @@ int main() {
 	//projection = glm::ortho(0.0f, (GLfloat)screenWidth, 0.0f, (GLfloat)screenHeight, 0.1f, 1000.0f);//Izq,Der,Fondo,Alto,Cercania,Lejania
 	while (!glfwWindowShouldClose(window))
 	{
-		
+
 		Inputs(window);
 		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
 		glfwPollEvents();
@@ -179,16 +179,16 @@ int main() {
 		// Render
 		// Clear the colorbuffer
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
 		// Draw our first triangle
 		ourShader.Use();
-		glm::mat4 model=glm::mat4(1);
-		glm::mat4 view=glm::mat4(1);
-	
+		glm::mat4 model = glm::mat4(1);
+		glm::mat4 view = glm::mat4(1);
 
-		view = glm::translate(view, glm::vec3(movX,movY, movZ));
+
+		view = glm::translate(view, glm::vec3(movX, movY, movZ));
 		view = glm::rotate(view, glm::radians(rot), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		GLint modelLoc = glGetUniformLocation(ourShader.Program, "model");
@@ -199,17 +199,120 @@ int main() {
 		glUniformMatrix4fv(projecLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-	
+
 
 		glBindVertexArray(VAO);
+		/*
+		model = glm::mat4(1.0f);
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		*/
+		//Cara del león
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 2.0f));//Ancho, grosor, profundidad
+		model = glm::translate(model, glm::vec3(0.0f, 1.5f, 1.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-	
-	    model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(3.0f, 0.1f, 3.0f));//Ancho, grosor, profundidad
-	    model = glm::translate(model,glm::vec3(0.0f, 0.6f, 0.0f));
+		//Trompa del león
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.5f));//Ancho, grosor, profundidad
+		model = glm::translate(model, glm::vec3(0.0f, 1.5f, 2.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		//Tronco del leon
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 5.0f));//Ancho, grosor, profundidad
+		model = glm::translate(model, glm::vec3(0.0f, 0.6f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//Primer pierna del leon
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.5f, 1.5f, 0.5f));//Tamaño de la pata
+		model = glm::translate(model, glm::vec3(1.5f, -0.2f, 4.5f));//Posición de la pata
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//Primer pata del leon
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.5f, 0.2f, 0.8f));//Tamaño de la pata
+		model = glm::translate(model, glm::vec3(1.5f, -5.0f, 3.0f));//Posición de la pata
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+		//Segunda pierna del leon
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.5f, 1.5f, 0.5f));//Tamaño de la pata
+		model = glm::translate(model, glm::vec3(-1.5f, -0.2f, 4.5f));//Posición de la pata
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//Segunda pata del leon
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.5f, 0.2f, 0.8f));//Tamaño de la pata
+		model = glm::translate(model, glm::vec3(-1.5f, -5.0f, 3.0f));//Posición de la pata
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		//Tercera pierna del leon
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.5f, 1.5f, 0.5f));//Tamaño de la pata
+		model = glm::translate(model, glm::vec3(-1.5f, -0.2f, -4.5f));//Posición de la pata
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		//Tercera pata del leon
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.5f, 0.2f, 0.8f));//Tamaño de la pata
+		model = glm::translate(model, glm::vec3(-1.5f, -5.0f, -2.62f));//Posición de la pata
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+		//Cuarta pierna del leon
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.5f, 1.5f, 0.5f));//Tamaño de la pata
+		model = glm::translate(model, glm::vec3(1.5f, -0.2f, -4.5f));//Posición de la pata
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		//Cuarta pata del leon
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.5f, 0.2f, 0.8f));//Tamaño de la pata
+		model = glm::translate(model, glm::vec3(1.5f, -5.0f, -2.62f));//Posición de la pata
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		//Cola del leon
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.3f, 0.4f, 0.9f));
+		model = glm::translate(model, glm::vec3(0.0f, 4.45f, -2.9f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.3f, 0.9f, 0.4f));
+		model = glm::translate(model, glm::vec3(0.0f, 1.7f, -7.2f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.3f, 0.4f, 0.9f));
+		model = glm::translate(model, glm::vec3(0.0f, 2.3f, -3.48f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.3f, 1.2f, 0.4f));
+		model = glm::translate(model, glm::vec3(0.0f, 1.1f, -9.2f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.3f, 0.4f, 0.9f));
+		model = glm::translate(model, glm::vec3(0.0f, 4.4f, -4.37f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		/*
 		//Primer pata de la mesa
 		model = glm::mat4(1.0f);
 		model = glm::scale(model, glm::vec3(0.1f, 0.6f, 0.1f));//Tamaño de la pata
@@ -237,7 +340,8 @@ int main() {
 		model = glm::translate(model, glm::vec3(14.4f, -0.4f, -14.5f));//Posición de la pata
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-
+		*/
+		
 		glBindVertexArray(0);
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
@@ -267,9 +371,9 @@ int main() {
 	 if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		 movZ += 0.008f;
 	 if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		 rot += 0.004f;
+		 rot += 0.04f;
 	 if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		 rot -= 0.004f;
+		 rot -= 0.04f;
  }
 
 
