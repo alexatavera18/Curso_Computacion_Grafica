@@ -1,7 +1,8 @@
 /*Práctica 4_Lopez Alexa
   Fecha: 5/09/2025
   Tema: Modelado geometrico
-  Objetivo:Construir un leon estilo voxel*/
+  Objetivo:Construir un leon estilo voxel
+  Numero de cuenta: 319023024*/
 
 #include<iostream>
 #include <algorithm>
@@ -150,7 +151,7 @@ int main() {
 		-0.5f,  0.5f, -0.5f, 1.0f, 0.647f, 0.0f,
 	};
 
-	// Naranja fuerte (#FF7A00 -> 1.0, 0.478, 0.0)
+	// Naranja fuerte (1.0, 0.478, 0.0)
 	float verticesNaranjaFuerte[sizeof(vertices) / sizeof(vertices[0])];
 	std::copy(std::begin(vertices), std::end(vertices), std::begin(verticesNaranjaFuerte));
 	for (size_t i = 0; i < sizeof(verticesNaranjaFuerte) / sizeof(float); i += 6) {
@@ -322,7 +323,7 @@ int main() {
 		model = glm::translate(model, glm::vec3(1.5f, -5.0f, -2.62f));//Posición de la pata
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-
+		
 		//Cola del leon
 		model = glm::mat4(1.0f);
 		model = glm::scale(model, glm::vec3(0.3f, 0.4f, 0.9f));
@@ -353,11 +354,11 @@ int main() {
 		model = glm::translate(model, glm::vec3(0.0f, 4.4f, -4.37f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-
+		
 
 		glBindVertexArray(vaoNaranjaFuerte);//Naranja fuerte para la melena del leon 
 
-
+		
 		//Melena del leon
 		model = glm::mat4(1.0f);
 		model = glm::scale(model, glm::vec3(2.5f, 3.3f, 0.3f));//Ancho, grosor, profundidad
@@ -408,7 +409,7 @@ int main() {
 		model = glm::translate(model, glm::vec3(0.0f, 4.4f, -9.37f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glDrawArrays(GL_TRIANGLES, 0, 36);
-
+		
 		glBindVertexArray(vaoNegro);
 		//Ojos
 		model = glm::mat4(1.0f);
