@@ -1,7 +1,8 @@
 ﻿//Nombre: Alexa Fernanda López Tavera
 //Practica 5: Modelado Jerarquico
-//Fecha de entrega: 9 de Septiembre,2025
+//Fecha de entrega: 12 de Septiembre,2025
 //No. de cuenta:319023024
+//Terminar la mano robotica y agregar restricciones
 
 #include<iostream>
 #include <GL/glew.h>
