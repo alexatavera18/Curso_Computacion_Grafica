@@ -1,6 +1,6 @@
 //Nombre : Alexa Fernanda López Tavera
-//Previo 6 : Carga de Modelos
-//Fecha de entrega: 21 de Septiembre,2025
+//Practica 6 : Carga de Modelos
+//Fecha de entrega: 26 de Septiembre,2025
 //No. de cuenta:319023024*/
 #include <string>
 
@@ -29,13 +29,13 @@ const GLuint WIDTH = 800, HEIGHT = 600;
 int SCREEN_WIDTH, SCREEN_HEIGHT;
 
 // Function prototypes
-void KeyCallback( GLFWwindow *window, int key, int scancode, int action, int mode );
-void MouseCallback( GLFWwindow *window, double xPos, double yPos );
-void DoMovement( );
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void MouseCallback(GLFWwindow* window, double xPos, double yPos);
+void DoMovement();
 
 
 // Camera
-Camera camera( glm::vec3( 0.0f, 0.0f, 3.0f ) );
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
@@ -45,62 +45,70 @@ GLfloat lastFrame = 0.0f;
 
 
 
-int main( )
+int main()
 {
     // Init GLFW
-    glfwInit( );
+    glfwInit();
     // Set all the required options for GLFW
-    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3 );
-    glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
-    glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
-    glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
-    glfwWindowHint( GLFW_RESIZABLE, GL_FALSE );
-    
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
     // Create a GLFWwindow object that we can use for GLFW's functions
-    GLFWwindow *window = glfwCreateWindow( WIDTH, HEIGHT, "Previo6_Carga de modelos y camara sintetica_Alexa Lopez", nullptr, nullptr );
-    
-    if ( nullptr == window )
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Practica 6_Carga de modelos y camara sintetica_Alexa Lopez", nullptr, nullptr);
+
+    if (nullptr == window)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate( );
-        
+        glfwTerminate();
+
         return EXIT_FAILURE;
     }
-    
-    glfwMakeContextCurrent( window );
-    
-    glfwGetFramebufferSize( window, &SCREEN_WIDTH, &SCREEN_HEIGHT );
-    
+
+    glfwMakeContextCurrent(window);
+
+    glfwGetFramebufferSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
+
     // Set the required callback functions
-    glfwSetKeyCallback( window, KeyCallback );
-    glfwSetCursorPosCallback( window, MouseCallback );
-    
+    glfwSetKeyCallback(window, KeyCallback);
+    glfwSetCursorPosCallback(window, MouseCallback);
+
     // GLFW Options
     //glfwSetInputMode( window, GLFW_CURSOR, GLFW_CURSOR_DISABLED );
-    
+
     // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
     glewExperimental = GL_TRUE;
     // Initialize GLEW to setup the OpenGL Function pointers
-    if ( GLEW_OK != glewInit( ) )
+    if (GLEW_OK != glewInit())
     {
         std::cout << "Failed to initialize GLEW" << std::endl;
         return EXIT_FAILURE;
     }
-    
+
     // Define the viewport dimensions
-    glViewport( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
-    
+    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
     // OpenGL options
-    glEnable( GL_DEPTH_TEST );
-    
+    glEnable(GL_DEPTH_TEST);
+
     // Setup and compile our shaders
-    Shader shader( "Shader/modelLoading.vs", "Shader/modelLoading.frag" );
-    
+    Shader shader("Shader/modelLoading.vs", "Shader/modelLoading.frag");
+
     // Load models
     Model dog((char*)"Models/RedDog.obj");
-    glm::mat4 projection = glm::perspective( camera.GetZoom( ), ( float )SCREEN_WIDTH/( float )SCREEN_HEIGHT, 0.1f, 100.0f );
-    
-  
+    Model flor((char*)"Flower/Flower_.obj");
+    Model pelota((char*)"BasketBall/BasketBall/BasketBall.obj");
+    Model tetera((char*)"tetera/OBJ/Teapot.obj");
+    Model arbol((char*)"Arbol/tree_trunk_axis_textures.obj");
+    Model granja((char*)"granja/house_flat.obj");
+
+
+
+    glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+
+
 
     // Game loop
     while (!glfwWindowShouldClose(window))
@@ -133,83 +141,117 @@ int main( )
         model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         dog.Draw(shader);
+       
+        // 3) flor
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-2.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.0f, 0.5f, 1.0f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        flor.Draw(shader);
+        
+        // 4) Pelota
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -0.5f, 2.5f));
+        model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0, 1, 0));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        pelota.Draw(shader);
 
+        // 5) Arbol
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.1f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        arbol.Draw(shader);
+        
+        // 6) Granja
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(6.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(4.5f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        granja.Draw(shader);
+
+        // 7) Tetera
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.7f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        tetera.Draw(shader);
+        
         // Swap the buffers
-        glfwSwapBuffers( window );
+        glfwSwapBuffers(window);
     }
-    
-    glfwTerminate( );
+
+    glfwTerminate();
     return 0;
 }
 
 
 // Moves/alters the camera positions based on user input
-void DoMovement( )
+void DoMovement()
 {
     // Camera controls
-    if ( keys[GLFW_KEY_W] || keys[GLFW_KEY_UP] )
+    if (keys[GLFW_KEY_W] || keys[GLFW_KEY_UP])
     {
-        camera.ProcessKeyboard( FORWARD, deltaTime );
-    }
-    
-    if ( keys[GLFW_KEY_S] || keys[GLFW_KEY_DOWN] )
-    {
-        camera.ProcessKeyboard( BACKWARD, deltaTime );
-    }
-    
-    if ( keys[GLFW_KEY_A] || keys[GLFW_KEY_LEFT] )
-    {
-        camera.ProcessKeyboard( LEFT, deltaTime );
-    }
-    
-    if ( keys[GLFW_KEY_D] || keys[GLFW_KEY_RIGHT] )
-    {
-        camera.ProcessKeyboard( RIGHT, deltaTime );
+        camera.ProcessKeyboard(FORWARD, deltaTime);
     }
 
-   
+    if (keys[GLFW_KEY_S] || keys[GLFW_KEY_DOWN])
+    {
+        camera.ProcessKeyboard(BACKWARD, deltaTime);
+    }
+
+    if (keys[GLFW_KEY_A] || keys[GLFW_KEY_LEFT])
+    {
+        camera.ProcessKeyboard(LEFT, deltaTime);
+    }
+
+    if (keys[GLFW_KEY_D] || keys[GLFW_KEY_RIGHT])
+    {
+        camera.ProcessKeyboard(RIGHT, deltaTime);
+    }
+
+
 }
 
 // Is called whenever a key is pressed/released via GLFW
-void KeyCallback( GLFWwindow *window, int key, int scancode, int action, int mode )
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-    if ( GLFW_KEY_ESCAPE == key && GLFW_PRESS == action )
+    if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)
     {
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
-    
-    if ( key >= 0 && key < 1024 )
+
+    if (key >= 0 && key < 1024)
     {
-        if ( action == GLFW_PRESS )
+        if (action == GLFW_PRESS)
         {
             keys[key] = true;
         }
-        else if ( action == GLFW_RELEASE )
+        else if (action == GLFW_RELEASE)
         {
             keys[key] = false;
         }
     }
 
- 
 
- 
+
+
 }
 
-void MouseCallback( GLFWwindow *window, double xPos, double yPos )
+void MouseCallback(GLFWwindow* window, double xPos, double yPos)
 {
-    if ( firstMouse )
+    if (firstMouse)
     {
         lastX = xPos;
         lastY = yPos;
         firstMouse = false;
     }
-    
+
     GLfloat xOffset = xPos - lastX;
     GLfloat yOffset = lastY - yPos;  // Reversed since y-coordinates go from bottom to left
-    
+
     lastX = xPos;
     lastY = yPos;
-    
-    camera.ProcessMouseMovement( xOffset, yOffset );
-}
 
+    camera.ProcessMouseMovement(xOffset, yOffset);
+}
