@@ -1,8 +1,0 @@
-# MTL simple para OpenGL (unlit)
-newmtl tripo_mat_2c592e8a-3755-4419-8c2e-5b6e6d0a4f0f
-Ka 1.000 1.000 1.000
-Kd 1.000 1.000 1.000
-Ks 0.000 0.000 0.000
-d 1.0
-illum 2
-map_Kd Color.jpg
