@@ -1,6 +1,7 @@
 /*Nombre : Alexa Fernanda López Tavera
-* Previo 7: Texturizado
-* Fecha de entrega: 28 de Septiembre,2025
+* Practica 7: Texturizado
+* Realizar un dado con la textura (En una sola textura todas las caras del dado)
+* Fecha de entrega: 10 de Octubre,2025
 * No. de cuenta:319023024*/
 
 #include <iostream>
@@ -24,10 +25,9 @@
 #include "Shader.h"
 #include "Camera.h"
 
-
 // Function prototypes
-void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode);
-void MouseCallback(GLFWwindow *window, double xPos, double yPos);
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void MouseCallback(GLFWwindow* window, double xPos, double yPos);
 void DoMovement();
 
 // Window dimensions
@@ -45,249 +45,244 @@ bool firstMouse = true;
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 // Deltatime
-GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
-GLfloat lastFrame = 0.0f;  	// Time of last frame
+GLfloat deltaTime = 0.0f;
+GLfloat lastFrame = 0.0f;
 
-							// The MAIN function, from here we start the application and run the game loop
 int main()
 {
-	// Init GLFW
-	glfwInit();
-	// Set all the required options for GLFW
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    // Init GLFW
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Previo7_Texturizado_Alexa_Lopez", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Practica 7_Texturizado_Alexa_Lopez", nullptr, nullptr);
+    if (!window) {
+        std::cout << "Failed to create GLFW window\n";
+        glfwTerminate();
+        return EXIT_FAILURE;
+    }
 
-	if (nullptr == window)
-	{
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
+    glfwMakeContextCurrent(window);
+    glfwGetFramebufferSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
 
-		return EXIT_FAILURE;
-	}
+    // Callbacks
+    glfwSetKeyCallback(window, KeyCallback);
+    glfwSetCursorPosCallback(window, MouseCallback);
 
-	glfwMakeContextCurrent(window);
+    // Mouse look (como antes)
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	glfwGetFramebufferSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
+    glewExperimental = GL_TRUE;
+    if (GLEW_OK != glewInit()) {
+        std::cout << "Failed to initialize GLEW\n";
+        return EXIT_FAILURE;
+    }
 
-	// Set the required callback functions
-	glfwSetKeyCallback(window, KeyCallback);
-	glfwSetCursorPosCallback(window, MouseCallback);
+    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    glEnable(GL_DEPTH_TEST);
 
-	// GLFW Options
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    // Shaders
+    Shader lampShader("Shader/lamp.vs", "Shader/lamp.frag");
 
-	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
-	glewExperimental = GL_TRUE;
-	// Initialize GLEW to setup the OpenGL Function pointers
-	if (GLEW_OK != glewInit())
-	{
-		std::cout << "Failed to initialize GLEW" << std::endl;
-		return EXIT_FAILURE;
-	}
+    // ===========================
+    // Geometría: CUBO con UVs
+    // Formato: pos(3), color(3), uv(2) => stride = 8
+    // Atlas 3x2 (u: 0,1/3,2/3,1 ; v: 0,0.5,1)
+    // Orden imagen: Arriba [6|5|4], Abajo [3|2|1]
+    // Caras: FRONT=1, BACK=6, LEFT=3, RIGHT=4, TOP=5, BOTTOM=2
+    // ===========================
+    const float U0 = 0.0f, U1 = 1.0f / 3.0f, U2 = 2.0f / 3.0f, U3 = 1.0f;
+    const float V0 = 0.0f, V1 = 0.5f, V2 = 1.0f;
 
-	// Define the viewport dimensions
-	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    GLfloat vertices[] =
+    {
+        // FRONT (1) -> (2,0)
+        -0.5f,-0.5f, 0.5f,  1,1,1,  U2, V0,
+         0.5f,-0.5f, 0.5f,  1,1,1,  U3, V0,
+         0.5f, 0.5f, 0.5f,  1,1,1,  U3, V1,
+        -0.5f, 0.5f, 0.5f,  1,1,1,  U2, V1,
 
-	// OpenGL options
-	glEnable(GL_DEPTH_TEST);
+        // BACK (6) -> (0,1)  (u invertida)
+        -0.5f,-0.5f,-0.5f,  1,1,1,  U1, V1,
+         0.5f,-0.5f,-0.5f,  1,1,1,  U0, V1,
+         0.5f, 0.5f,-0.5f,  1,1,1,  U0, V2,
+        -0.5f, 0.5f,-0.5f,  1,1,1,  U1, V2,
 
+        // LEFT (3) -> (0,0)
+        -0.5f,-0.5f,-0.5f,  1,1,1,  U0, V0,
+        -0.5f,-0.5f, 0.5f,  1,1,1,  U1, V0,
+        -0.5f, 0.5f, 0.5f,  1,1,1,  U1, V1,
+        -0.5f, 0.5f,-0.5f,  1,1,1,  U0, V1,
 
-	// Build and compile our shader program
-	Shader lampShader("Shader/lamp.vs", "Shader/lamp.frag");
+        // RIGHT (4) -> (2,1)
+         0.5f,-0.5f, 0.5f,  1,1,1,  U2, V1,
+         0.5f,-0.5f,-0.5f,  1,1,1,  U3, V1,
+         0.5f, 0.5f,-0.5f,  1,1,1,  U3, V2,
+         0.5f, 0.5f, 0.5f,  1,1,1,  U2, V2,
 
-	// Set up vertex data (and buffer(s)) and attribute pointers
-	GLfloat vertices[] =
-	{
-		// Positions            // Colors              // Texture Coords
-		-0.5f, -0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.0f,0.0f,
-		0.5f, -0.5f, 0.0f,	   1.0f, 1.0f,1.0f,		2.0f,0.0f,
-		0.5f,  0.5f, 0.0f,     1.0f, 1.0f,1.0f,	    2.0f,2.0f,
-		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.0f,2.0f,
+         // TOP (5) -> (1,1)
+         -0.5f, 0.5f, 0.5f,  1,1,1,  U1, V1,
+          0.5f, 0.5f, 0.5f,  1,1,1,  U2, V1,
+          0.5f, 0.5f,-0.5f,  1,1,1,  U2, V2,
+         -0.5f, 0.5f,-0.5f,  1,1,1,  U1, V2,
 
-		
-	};
+         // BOTTOM (2) -> (1,0)
+         -0.5f,-0.5f,-0.5f,  1,1,1,  U1, V0,
+          0.5f,-0.5f,-0.5f,  1,1,1,  U2, V0,
+          0.5f,-0.5f, 0.5f,  1,1,1,  U2, V1,
+         -0.5f,-0.5f, 0.5f,  1,1,1,  U1, V1,
+    };
 
-	GLuint indices[] =
-	{  // Note that we start from 0!
-		0,1,3,
-		1,2,3
-	
-	};
+    GLuint indices[] =
+    {
+        0,1,2,  0,2,3,      // FRONT
+        4,5,6,  4,6,7,      // BACK
+        8,9,10, 8,10,11,    // LEFT
+        12,13,14, 12,14,15, // RIGHT
+        16,17,18, 16,18,19, // TOP
+        20,21,22, 20,22,23  // BOTTOM
+    };
 
-	// First, set the container's VAO (and VBO)
-	GLuint VBO, VAO,EBO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+    // Buffers
+    GLuint VBO, VAO, EBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	// Position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)0);
-	glEnableVertexAttribArray(0);
-	// Color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-	// Texture Coordinate attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(6 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(2);
-	glBindVertexArray(0);
+    // Atributos (stride = 8 floats)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
 
-	// Load textures
-	GLuint texture1;
-	glGenTextures(1, &texture1);
-	glBindTexture(GL_TEXTURE_2D,texture1);
-	int textureWidth, textureHeight,nrChannels;
-	stbi_set_flip_vertically_on_load(true);
-	unsigned char *image;
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-	// Diffuse map
-	image = stbi_load("images/piedra.jpg", &textureWidth, &textureHeight, &nrChannels,0);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-	glGenerateMipmap(GL_TEXTURE_2D);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
 
-	if (image)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Failed to load texture" << std::endl;
-	}
-	stbi_image_free(image);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
 
-	
+    glBindVertexArray(0);
 
-	// Game loop
-	while (!glfwWindowShouldClose(window))
-	{
-		// Calculate deltatime of current frame
-		GLfloat currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
+    // Textura
+    GLuint texture1;
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
 
-		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
-		glfwPollEvents();
-		DoMovement();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		// Clear the colorbuffer
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    int textureWidth, textureHeight, nrChannels;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* image = stbi_load("images/dado_text.jpg", &textureWidth, &textureHeight, &nrChannels, 0);
+    if (image) {
+        GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
+        glTexImage2D(GL_TEXTURE_2D, 0, format, textureWidth, textureHeight, 0, format, GL_UNSIGNED_BYTE, image);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else {
+        std::cout << "Failed to load texture\n";
+    }
+    stbi_image_free(image);
 
-		lampShader.Use();
-		//// Create camera transformations
-		glm::mat4 view;
-		view = camera.GetViewMatrix();
-		glm::mat4 projection = glm::perspective(camera.GetZoom(), (GLfloat)SCREEN_WIDTH / (GLfloat)SCREEN_HEIGHT, 0.1f, 100.0f);
-		glm::mat4 model(1);
-		// Get location objects for the matrices on the lamp shader (these could be different on a different shader)
-		// Get the uniform locations
-		GLint modelLoc = glGetUniformLocation(lampShader.Program, "model");
-		GLint viewLoc = glGetUniformLocation(lampShader.Program, "view");
-		GLint projLoc = glGetUniformLocation(lampShader.Program, "projection");
+    // Sampler
+    lampShader.Use();
+    glUniform1i(glGetUniformLocation(lampShader.Program, "ourTexture"), 0);
 
-		// Bind diffuse map
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture1);
+    // Loop
+    while (!glfwWindowShouldClose(window))
+    {
+        // Time
+        GLfloat currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
 
-		// Set matrices
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		// Draw the light object (using light's vertex attributes)
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
+        glfwPollEvents();
+        DoMovement();
 
-		// Swap the screen buffers
-		glfwSwapBuffers(window);
-	}
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
-	// Terminate GLFW, clearing any resources allocated by GLFW.
-	glfwTerminate();
+        lampShader.Use();
 
-	return 0;
+        // Vista desde la cámara 
+        glm::mat4 view = camera.GetViewMatrix();
+        glm::mat4 projection = glm::perspective(camera.GetZoom(), (GLfloat)SCREEN_WIDTH / (GLfloat)SCREEN_HEIGHT, 0.1f, 100.0f);
+
+        // Modelo ESTÁTICO (identidad)
+        glm::mat4 model(1.0f); // <--- sin rotación
+
+        // Uniforms
+        GLint modelLoc = glGetUniformLocation(lampShader.Program, "model");
+        GLint viewLoc = glGetUniformLocation(lampShader.Program, "view");
+        GLint projLoc = glGetUniformLocation(lampShader.Program, "projection");
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+        // Dibujo
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+
+        glfwSwapBuffers(window);
+    }
+
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+    glfwTerminate();
+    return 0;
 }
 
-// Moves/alters the camera positions based on user input
+// Camera WASD
 void DoMovement()
 {
-	// Camera controls
-	if (keys[GLFW_KEY_W] || keys[GLFW_KEY_UP])
-	{
-		camera.ProcessKeyboard(FORWARD, deltaTime);
-	}
-
-	if (keys[GLFW_KEY_S] || keys[GLFW_KEY_DOWN])
-	{
-		camera.ProcessKeyboard(BACKWARD, deltaTime);
-	}
-
-	if (keys[GLFW_KEY_A] || keys[GLFW_KEY_LEFT])
-	{
-		camera.ProcessKeyboard(LEFT, deltaTime);
-	}
-
-	if (keys[GLFW_KEY_D] || keys[GLFW_KEY_RIGHT])
-	{
-		camera.ProcessKeyboard(RIGHT, deltaTime);
-	}
+    if (keys[GLFW_KEY_W] || keys[GLFW_KEY_UP])    camera.ProcessKeyboard(FORWARD, deltaTime);
+    if (keys[GLFW_KEY_S] || keys[GLFW_KEY_DOWN])  camera.ProcessKeyboard(BACKWARD, deltaTime);
+    if (keys[GLFW_KEY_A] || keys[GLFW_KEY_LEFT])  camera.ProcessKeyboard(LEFT, deltaTime);
+    if (keys[GLFW_KEY_D] || keys[GLFW_KEY_RIGHT]) camera.ProcessKeyboard(RIGHT, deltaTime);
 }
 
-// Is called whenever a key is pressed/released via GLFW
-void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode)
+// Key callback
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-	if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)
-	{
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	}
+    if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)
+        glfwSetWindowShouldClose(window, GL_TRUE);
 
-	if (key >= 0 && key < 1024)
-	{
-		if (action == GLFW_PRESS)
-		{
-			keys[key] = true;
-		}
-		else if (action == GLFW_RELEASE)
-		{
-			keys[key] = false;
-		}
-	}
+    if (key >= 0 && key < 1024) {
+        if (action == GLFW_PRESS)      keys[key] = true;
+        else if (action == GLFW_RELEASE) keys[key] = false;
+    }
 }
 
-void MouseCallback(GLFWwindow *window, double xPos, double yPos)
+//Ver en cámara con mouse
+void MouseCallback(GLFWwindow* window, double xPos, double yPos)
 {
-	if (firstMouse)
-	{
-		lastX = xPos;
-		lastY = yPos;
-		firstMouse = false;
-	}
+    if (firstMouse) {
+        lastX = (GLfloat)xPos;
+        lastY = (GLfloat)yPos;
+        firstMouse = false;
+    }
 
-	GLfloat xOffset = xPos - lastX;
-	GLfloat yOffset = lastY - yPos;  // Reversed since y-coordinates go from bottom to left
+    GLfloat xOffset = (GLfloat)xPos - lastX;
+    GLfloat yOffset = lastY - (GLfloat)yPos; // y invertida
 
-	lastX = xPos;
-	lastY = yPos;
+    lastX = (GLfloat)xPos;
+    lastY = (GLfloat)yPos;
 
-	camera.ProcessMouseMovement(xOffset, yOffset);
+    camera.ProcessMouseMovement(xOffset, yOffset);
 }
