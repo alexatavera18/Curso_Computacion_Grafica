@@ -1,6 +1,6 @@
 #version 330 core
 
-#define NUMBER_OF_POINT_LIGHTS 4
+#define NUMBER_OF_POINT_LIGHTS 1
 
 struct Material
 {
@@ -60,9 +60,6 @@ uniform SpotLight spotLight;
 uniform Material material;
 uniform int transparency;
 
-// Control de transparencia
-uniform float alphaMul; // 1.0 = normal, >1.0 más opaco, <1.0 más transparente
-
 // Function prototypes
 vec3 CalcDirLight( DirLight light, vec3 normal, vec3 viewDir );
 vec3 CalcPointLight( PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir );
@@ -85,18 +82,11 @@ void main( )
     
     // Spot light
     result += CalcSpotLight( spotLight, norm, FragPos, viewDir );
-
-     // Color y transparencia del material
-    vec4 tex = texture(material.diffuse, TexCoords);
-    float alpha = clamp(tex.a * alphaMul, 0.0, 1.0);
-
-    if (transparency == 1 && alpha < 0.1)
-        discard;
  	
-    //color = vec4( result,texture(material.diffuse, TexCoords).rgb );
-	  //if(color.a < 0.1 && transparency==1)
-        //discard;
-    color = vec4(result, alpha);
+    color = vec4( result,texture(material.diffuse, TexCoords).rgb );
+	  if(color.a < 0.1 && transparency==1)
+        discard;
+
 }
 
 // Calculates the color when using a directional light.
